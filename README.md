@@ -87,6 +87,11 @@ composer run new
 ```
 This single command handles migrations, seeding, and starts all development services.
 
+```bash
+composer run dev
+```
+For everyday coding and testing (no migrations or seeding).
+
 **Individual Services**
 ```bash
 php artisan serve    # Laravel server
@@ -109,6 +114,24 @@ php artisan test    # Run all tests
 php artisan test --coverage  # With coverage
 php artisan test tests/Feature/Auth/AuthenticationTest.php  # Specific test
 ```
+
+## 🔑 Default Users (First Install)
+
+When you run `composer run new` for the first time, the system will automatically create the following default accounts:
+
+| Email               | Password   | Role  |
+|---------------------|------------|-------|
+| `admin@saasphp.com` | `password` | Admin |
+| `user1@saasphp.com` | `password` | User  |
+| `user2@saasphp.com` | `password` | User  |
+
+> ⚠️ **Security Notice**  
+> These default accounts are for **development and testing only**.  
+> Before deploying to production, you should:
+> - Change the default passwords.  
+> - Update the admin email.  
+> - Remove or disable the sample user accounts if not needed.
+
 
 ## 📁 Project Structure
 
@@ -175,7 +198,7 @@ Ensure production environment variables are configured for database, social logi
 
 ## 📄 License
 
-MIT License
+This project is open-source and available under the [MIT License](LICENSE).
 
 ## 🆘 Support
 
