@@ -196,9 +196,6 @@ Ensure production environment variables are configured for database, social logi
 3. Run tests and linting
 4. Submit a pull request
 
-## 📄 License
-
-This project is open-source and available under the [MIT License](LICENSE).
 
 ## 🆘 Support
 
