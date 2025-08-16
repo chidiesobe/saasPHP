@@ -15,17 +15,24 @@ return [
     */
 
     'postmark' => [
-        'token' => env('POSTMARK_TOKEN'),
-    ],
-
-    'ses' => [
-        'key' => env('AWS_ACCESS_KEY_ID'),
-        'secret' => env('AWS_SECRET_ACCESS_KEY'),
-        'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
+        'token' => '',
     ],
 
     'resend' => [
-        'key' => env('RESEND_KEY'),
+        'key' => '',
+    ],
+
+    'mailgun' => [
+        'transport' => 'mailgun',
+        'domain'   => '',
+        'secret'   => '',
+        'endpoint' => '',
+    ],
+
+    'vonage' => [
+        'key' => '',
+        'secret' => '',
+        'sms_from' => '',
     ],
 
     'slack' => [
@@ -33,6 +40,12 @@ return [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
+    ],
+
+    'ses' => [
+        'key' => env('AWS_ACCESS_KEY_ID'),
+        'secret' => env('AWS_SECRET_ACCESS_KEY'),
+        'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
 ];

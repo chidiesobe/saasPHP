@@ -1,28 +1,41 @@
-import { Head, useForm } from '@inertiajs/react';
-import { LoaderCircle } from 'lucide-react';
-import { FormEventHandler } from 'react';
-
 import InputError from '@/components/input-error';
+import SocialLogins from '@/components/social-logins';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
+import { Head, useForm, usePage } from '@inertiajs/react';
+import { LoaderCircle } from 'lucide-react';
+import { FormEventHandler } from 'react';
+
+interface SocialIds {
+    google_id: string;
+    microsoft_id: string;
+    yahoo_id: string;
+    github_id: string;
+    twitter_id: string;
+}
 
 interface RegisterForm {
     name: string;
     email: string;
+    phone: string;
     password: string;
     password_confirmation: string;
+    [key: string]: string; 
 }
 
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm<RegisterForm>({
         name: '',
         email: '',
+        phone: '',
         password: '',
         password_confirmation: '',
     });
+
+    const { twoFactorEnabled, social_ids } = usePage().props as unknown as { twoFactorEnabled: boolean; social_ids: SocialIds };
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
@@ -32,10 +45,10 @@ export default function Register() {
     };
 
     return (
-        <AuthLayout title="Create an account" description="Enter your details below to create your account">
+        <AuthLayout title="Create an account" description="">
             <Head title="Register" />
-            <form className="flex flex-col gap-6" onSubmit={submit}>
-                <div className="grid gap-6">
+            <form className="flex flex-col gap-4" onSubmit={submit}>
+                <div className="grid gap-2">
                     <div className="grid gap-2">
                         <Label htmlFor="name">Name</Label>
                         <Input
@@ -58,7 +71,7 @@ export default function Register() {
                         <Input
                             id="email"
                             type="email"
-                            required
+                            // required
                             tabIndex={2}
                             autoComplete="email"
                             value={data.email}
@@ -70,12 +83,28 @@ export default function Register() {
                     </div>
 
                     <div className="grid gap-2">
+                        <Label htmlFor="phone">Phone number</Label>
+                        <Input
+                            id="phone"
+                            type="text"
+                            // required
+                            tabIndex={3}
+                            autoComplete="phone"
+                            value={data.phone}
+                            onChange={(e) => setData('phone', e.target.value)}
+                            disabled={processing}
+                            placeholder="+2347012345678"
+                        />
+                        <InputError message={errors.phone} />
+                    </div>
+
+                    <div className="grid gap-2">
                         <Label htmlFor="password">Password</Label>
                         <Input
                             id="password"
                             type="password"
                             required
-                            tabIndex={3}
+                            tabIndex={4}
                             autoComplete="new-password"
                             value={data.password}
                             onChange={(e) => setData('password', e.target.value)}
@@ -91,7 +120,7 @@ export default function Register() {
                             id="password_confirmation"
                             type="password"
                             required
-                            tabIndex={4}
+                            tabIndex={5}
                             autoComplete="new-password"
                             value={data.password_confirmation}
                             onChange={(e) => setData('password_confirmation', e.target.value)}
@@ -113,6 +142,15 @@ export default function Register() {
                         Log in
                     </TextLink>
                 </div>
+                {twoFactorEnabled && (
+                    <SocialLogins
+                        google_id={social_ids.google_id}
+                        microsoft_id={social_ids.microsoft_id}
+                        yahoo_id={social_ids.yahoo_id}
+                        github_id={social_ids.github_id}
+                        twitter_id={social_ids.twitter_id}
+                    />
+                )}
             </form>
         </AuthLayout>
     );

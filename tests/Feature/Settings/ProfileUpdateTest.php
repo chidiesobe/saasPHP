@@ -21,7 +21,7 @@ test('profile information can be updated', function () {
         ->actingAs($user)
         ->patch('/settings/profile', [
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => 'test@saasphp.com',
         ]);
 
     $response
@@ -31,7 +31,7 @@ test('profile information can be updated', function () {
     $user->refresh();
 
     expect($user->name)->toBe('Test User');
-    expect($user->email)->toBe('test@example.com');
+    expect($user->email)->toBe('test@saasphp.com');
     expect($user->email_verified_at)->toBeNull();
 });
 
@@ -52,7 +52,7 @@ test('email verification status is unchanged when the email address is unchanged
     expect($user->refresh()->email_verified_at)->not->toBeNull();
 });
 
-test('user can delete their account', function () {
+test('user can soft-delete their account', function () {
     $user = User::factory()->create();
 
     $response = $this
@@ -66,8 +66,18 @@ test('user can delete their account', function () {
         ->assertRedirect('/');
 
     $this->assertGuest();
-    expect($user->fresh())->toBeNull();
+
+    // Laravel’s built-in assertion for soft deletes:
+    $this->assertSoftDeleted('users', [
+        'id' => $user->id,
+    ]);
+
+    //—or, if you prefer to check via the model instance—
+    $trashed = User::withTrashed()->find($user->id);
+    expect($trashed)->not->toBeNull();
+    expect($trashed->trashed())->toBeTrue();
 });
+
 
 test('correct password must be provided to delete account', function () {
     $user = User::factory()->create();

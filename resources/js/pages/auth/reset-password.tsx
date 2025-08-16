@@ -1,4 +1,4 @@
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
@@ -8,19 +8,21 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
 
-interface ResetPasswordProps {
-    token: string;
-    email: string;
-}
-
 interface ResetPasswordForm {
     token: string;
     email: string;
     password: string;
     password_confirmation: string;
+    [key: string]: string;
 }
 
-export default function ResetPassword({ token, email }: ResetPasswordProps) {
+export default function ResetPassword() {
+    const page = usePage();
+    const url = new URL(page.url, window.location.origin);
+
+    const token = url.pathname.split('/').pop() ?? '';
+    const email = url.searchParams.get('email') ?? '';
+
     const { data, setData, post, processing, errors, reset } = useForm<ResetPasswordForm>({
         token: token,
         email: email,
@@ -30,7 +32,7 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('password.store'), {
+        post(('/reset-password'), {
             onFinish: () => reset('password', 'password_confirmation'),
         });
     };
@@ -42,12 +44,12 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
             <form onSubmit={submit}>
                 <div className="grid gap-6">
                     <div className="grid gap-2">
-                        <Label htmlFor="email">Email</Label>
+                        <Label htmlFor="email">Email / Phone number</Label>
                         <Input
                             id="email"
-                            type="email"
+                            type="text"
                             name="email"
-                            autoComplete="email"
+                            autoComplete="username"
                             value={data.email}
                             className="mt-1 block w-full"
                             readOnly

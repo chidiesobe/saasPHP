@@ -17,7 +17,7 @@ export default function VerifyEmail({ status }: { status?: string }) {
     };
 
     return (
-        <AuthLayout title="Verify email" description="Please verify your email address by clicking on the link we just emailed to you.">
+        <AuthLayout title="Verify email" description="Please verify your email address by clicking on the link sent to you.">
             <Head title="Email verification" />
 
             {status === 'verification-link-sent' && (
@@ -32,7 +32,7 @@ export default function VerifyEmail({ status }: { status?: string }) {
                     Resend verification email
                 </Button>
 
-                <TextLink href={route('logout')} method="post" className="mx-auto block text-sm">
+                <TextLink href={route('logout')} method="post" as="button" className="mx-auto block text-sm">
                     Log out
                 </TextLink>
             </form>

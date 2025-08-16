@@ -1,6 +1,9 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Inertia\Testing\AssertableInertia as Assert;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
@@ -8,25 +11,36 @@ test('login screen can be rendered', function () {
     $response = $this->get('/login');
 
     $response->assertStatus(200);
+
+    $response->assertInertia(function (Assert $page) {
+        $page->component('auth/login');
+    });
 });
 
+
+
 test('users can authenticate using the login screen', function () {
-    $user = User::factory()->create();
+    $this->withoutMiddleware(VerifyCsrfToken::class);
+
+    $user = User::factory()->create([
+        'password' => Hash::make('password'),
+    ]);
 
     $response = $this->post('/login', [
-        'email' => $user->email,
+        'login'    => $user->email,
         'password' => 'password',
     ]);
 
-    $this->assertAuthenticated();
-    $response->assertRedirect(route('dashboard', absolute: false));
+    $this->assertAuthenticatedAs($user);
+    $response->assertRedirect('/');
 });
+
 
 test('users can not authenticate with invalid password', function () {
     $user = User::factory()->create();
 
     $this->post('/login', [
-        'email' => $user->email,
+        'login' => $user->email,
         'password' => 'wrong-password',
     ]);
 

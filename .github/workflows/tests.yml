@@ -3,12 +3,10 @@ name: tests
 on:
   push:
     branches:
-      - develop
-      - main
+      - '**'
   pull_request:
     branches:
-      - develop
-      - main
+      - '**'
 
 jobs:
   ci:
@@ -22,7 +20,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.4
-          tools: composer:v2
+          tools: composer:v2s
           coverage: xdebug
 
       - name: Setup Node
@@ -48,6 +46,9 @@ jobs:
 
       - name: Generate Application Key
         run: php artisan key:generate
+
+      - name: Clear Laravel Config Cache
+        run: php artisan config:clear
 
       - name: Tests
         run: ./vendor/bin/pest

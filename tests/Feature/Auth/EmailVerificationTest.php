@@ -4,33 +4,51 @@ use App\Models\User;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\URL;
+use Inertia\Testing\AssertableInertia as Assert;
+use App\Models\Setting;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 test('email verification screen can be rendered', function () {
-    $user = User::factory()->unverified()->create();
+    // Ensure email verification is enabled
+    Setting::updateOrCreate(
+        ['key' => 'features.enable_email_verification'],
+        ['value' => true]
+    );
 
-    $response = $this->actingAs($user)->get('/verify-email');
+    $user = User::factory()->create([
+        'email_verified_at' => null,
+    ]);
+
+    $response = $this->actingAs($user)->get('/email/verify');
 
     $response->assertStatus(200);
+
+    $response->assertInertia(function (Assert $page) {
+        $page->component('auth/verify-email');
+    });
 });
 
 test('email can be verified', function () {
-    $user = User::factory()->unverified()->create();
-
     Event::fake();
+
+    $user = User::factory()->unverified()->create();
 
     $verificationUrl = URL::temporarySignedRoute(
         'verification.verify',
         now()->addMinutes(60),
-        ['id' => $user->id, 'hash' => sha1($user->email)]
+        [
+            'id'   => $user->id,
+            'hash' => sha1($user->email),
+        ]
     );
 
     $response = $this->actingAs($user)->get($verificationUrl);
 
     Event::assertDispatched(Verified::class);
     expect($user->fresh()->hasVerifiedEmail())->toBeTrue();
-    $response->assertRedirect(route('dashboard', absolute: false).'?verified=1');
+
+    $response->assertRedirect(url('/?verified=1'));
 });
 
 test('email is not verified with invalid hash', function () {

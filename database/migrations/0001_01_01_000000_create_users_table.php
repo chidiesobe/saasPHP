@@ -4,6 +4,10 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+// We need DB & Hash in order to insert and hash passwords
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+
 return new class extends Migration
 {
     /**
@@ -11,16 +15,24 @@ return new class extends Migration
      */
     public function up(): void
     {
+        //
+        // Create the "users" table (as you already had).
+        //
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email')->unique();
+            $table->string('email')->nullable();
+            $table->string('phone')->nullable();
             $table->timestamp('email_verified_at')->nullable();
+            $table->timestamp('phone_verified_at')->nullable();
             $table->string('password');
+            $table->string('role')->default('user');
             $table->rememberToken();
+            $table->softDeletes();
             $table->timestamps();
         });
 
+        // Create "password_reset_tokens" and "sessions" tables (as you already had).
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
             $table->string('token');
@@ -42,8 +54,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
+        Schema::dropIfExists('password_reset_tokens');
+        Schema::dropIfExists('users');
     }
 };

@@ -1,32 +1,44 @@
-import { Head, useForm } from '@inertiajs/react';
-import { LoaderCircle } from 'lucide-react';
-import { FormEventHandler } from 'react';
-
 import InputError from '@/components/input-error';
+import SocialLogins from '@/components/social-logins';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
+import { Head, useForm, usePage } from '@inertiajs/react';
+import { LoaderCircle } from 'lucide-react';
+import { FormEventHandler } from 'react';
 
-interface LoginForm {
-    email: string;
-    password: string;
-    remember: boolean;
+interface SocialIds {
+    google_id: string;
+    microsoft_id: string;
+    yahoo_id: string;
+    github_id: string;
+    twitter_id: string;
 }
 
 interface LoginProps {
     status?: string;
     canResetPassword: boolean;
+    social_ids: SocialIds;
+}
+interface LoginForm {
+    login: string;
+    password: string;
+    remember: boolean;
+    [key: string]: string | boolean;
 }
 
-export default function Login({ status, canResetPassword }: LoginProps) {
+export default function Login() {
     const { data, setData, post, processing, errors, reset } = useForm<LoginForm>({
-        email: '',
+        login: '',
         password: '',
         remember: false,
     });
+
+    const { status, canResetPassword } = usePage().props as unknown as LoginProps;
+    const { twoFactorEnabled, social_ids } = usePage().props as unknown as { twoFactorEnabled: boolean; social_ids: SocialIds };
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
@@ -36,22 +48,29 @@ export default function Login({ status, canResetPassword }: LoginProps) {
     };
 
     return (
-        <AuthLayout title="Log in to your account" description="Enter your email and password below to log in">
+        <AuthLayout title="Log in to your account" description="Enter your email/phone and password below to log in">
             <Head title="Log in" />
-
+            
             <form className="flex flex-col gap-6" onSubmit={submit}>
                 <div className="grid gap-6">
                     <div className="grid gap-2">
-                        <Label htmlFor="email">Email address</Label>
+                        <div className="flex items-center">
+                            <Label htmlFor="password">Email address / Phone number</Label>
+                            {canResetPassword && (
+                                <TextLink href={route('magic.login')} className="ml-auto text-sm" tabIndex={5}>
+                                    Magic link login?
+                                </TextLink>
+                            )}
+                        </div>
                         <Input
-                            id="email"
-                            type="email"
+                            id="login"
+                            type="text"
                             required
                             autoFocus
                             tabIndex={1}
-                            autoComplete="email"
-                            value={data.email}
-                            onChange={(e) => setData('email', e.target.value)}
+                            autoComplete="username"
+                            value={data.login}
+                            onChange={(e) => setData('login', e.target.value)}
                             placeholder="email@example.com"
                         />
                         <InputError message={errors.email} />
@@ -78,10 +97,17 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                         />
                         <InputError message={errors.password} />
                     </div>
-
-                    <div className="flex items-center space-x-3">
-                        <Checkbox id="remember" name="remember" tabIndex={3} />
-                        <Label htmlFor="remember">Remember me</Label>
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
+                            <Checkbox id="remember" name="remember" tabIndex={3} />
+                            <Label htmlFor="remember">Remember me</Label>
+                        </div>
+                        <div className="text-muted-foreground text-center text-sm">
+                            Don't have an account?{' '}
+                            <TextLink href={route('register')} tabIndex={5}>
+                                Sign up
+                            </TextLink>
+                        </div>
                     </div>
 
                     <Button type="submit" className="mt-4 w-full" tabIndex={4} disabled={processing}>
@@ -89,13 +115,15 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                         Log in
                     </Button>
                 </div>
-
-                <div className="text-muted-foreground text-center text-sm">
-                    Don't have an account?{' '}
-                    <TextLink href={route('register')} tabIndex={5}>
-                        Sign up
-                    </TextLink>
-                </div>
+                {twoFactorEnabled && (
+                    <SocialLogins
+                        google_id={social_ids.google_id}
+                        microsoft_id={social_ids.microsoft_id}
+                        yahoo_id={social_ids.yahoo_id}
+                        github_id={social_ids.github_id}
+                        twitter_id={social_ids.twitter_id}
+                    />
+                )}
             </form>
 
             {status && <div className="mb-4 text-center text-sm font-medium text-green-600">{status}</div>}

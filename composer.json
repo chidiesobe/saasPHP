@@ -1,5 +1,4 @@
 {
-    "$schema": "https://getcomposer.org/schema.json",
     "name": "laravel/react-starter-kit",
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
@@ -10,9 +9,30 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "africastalking/africastalking": "^3.0",
+        "bezhansalleh/filament-shield": "^3.3",
+        "codeat3/blade-simple-icons": "^6.12",
+        "davidhsianturi/blade-bootstrap-icons": "^2.0",
+        "filament/filament": "^3.3",
+        "guzzlehttp/guzzle": "^7.9",
         "inertiajs/inertia-laravel": "^2.0",
+        "laravel/cashier": "^15.7",
+        "laravel/fortify": "^1.25",
         "laravel/framework": "^12.0",
+        "laravel/socialite": "^5.18",
         "laravel/tinker": "^2.10.1",
+        "laravel/vonage-notification-channel": "^3.3",
+        "league/commonmark": "^2.7",
+        "owenvoke/blade-fontawesome": "^2.9",
+        "paypal/paypal-server-sdk": "^1.1",
+        "postare/blade-mdi": "^1.1",
+        "resend/resend-php": "^0.17.0",
+        "socialiteproviders/microsoft": "^4.6",
+        "socialiteproviders/yahoo": "^4.1",
+        "stechstudio/filament-impersonate": "^3.16",
+        "symfony/http-client": "^7.2",
+        "symfony/mailgun-mailer": "^7.2",
+        "symfony/postmark-mailer": "^7.2",
         "tightenco/ziggy": "^2.4"
     },
     "require-dev": {
@@ -26,6 +46,7 @@
         "pestphp/pest-plugin-drift": "^3.0",
         "pestphp/pest-plugin-laravel": "^3.1"
     },
+    "repositories": [],
     "autoload": {
         "psr-4": {
             "App\\": "app/",
@@ -41,7 +62,8 @@
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
+            "@php artisan package:discover --ansi",
+            "@php artisan filament:upgrade"
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
@@ -56,12 +78,17 @@
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
-            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
+            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\"  \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
+        ],
+        "new": [
+            "Composer\\Config::disableProcessTimeout",
+            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan migrate\" \"php artisan db:seed\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
         ]
     },
     "extra": {
         "laravel": {
-            "dont-discover": []
+            "dont-discover": [],
+            "providers": []
         }
     },
     "config": {

@@ -25,6 +25,20 @@ export interface SharedData {
     name: string;
     quote: { message: string; author: string };
     auth: Auth;
+    site: {
+        name: string;
+        url: string;
+        description: string;
+        logo: string;
+        favicon: string;
+        theme: string;
+        timezone: string;
+        locale: string;
+        currency: string;
+        language: string;
+        date_format: string;
+        time_format: string;
+    };
     [key: string]: unknown;
 }
 
