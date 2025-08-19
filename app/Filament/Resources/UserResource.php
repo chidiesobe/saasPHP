@@ -234,7 +234,7 @@ class UserResource extends Resource implements HasShieldPermissions
                             (!($record->email && !$record->hasVerifiedEmail()));
                     }),
 
-                // Disabled impersonate icon — shown when verification is missing
+                // Disabled impersonate icon shown when verification is missing
                 Tables\Actions\Action::make('impersonate-disabled')
                     ->label('')
                     ->size(14)
@@ -272,9 +272,7 @@ class UserResource extends Resource implements HasShieldPermissions
                             return true;
                         }
 
-                        $adminCount = User::whereHas('roles', fn($q) => $q->where('name', 'admin'))->count();
-
-                        return $adminCount > 1;
+                        return !$record->hasRole('admin');
                     })
                     ->modalHeading('Trash User')
                     ->modalDescription('Are you sure you want to temporarily delete this user?')
@@ -303,9 +301,7 @@ class UserResource extends Resource implements HasShieldPermissions
                             return true;
                         }
 
-                        $adminCount = User::whereHas('roles', fn($q) => $q->where('name', 'admin'))->count();
-
-                        return $adminCount > 1;
+                        return !$record->hasRole('admin');
                     }),
             ])
             ->bulkActions([
