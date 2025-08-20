@@ -46,18 +46,14 @@ class UsersRelationManager extends RelationManager
             ->actions([
                 Tables\Actions\DetachAction::make()
                     ->label('Detach')
-                    ->disabled(
-                        fn($livewire) =>
-                        strtolower($livewire->getOwnerRecord()->name) === 'admin' &&
-                            $livewire->getOwnerRecord()->users()->count() <= 1
-                    ),
+                    ->hidden(fn($record) => !\App\Helpers\RoleHelper::shouldHideAdminDetach($record))
+                    ->authorize(fn($record) => !\App\Helpers\RoleHelper::shouldHideAdminDetach($record))
             ])
             ->bulkActions([
                 // Tables\Actions\DetachBulkAction::make()
                 //     ->label('Detach User From Role')
                 //     ->disabled(
-                //         fn($livewire) =>
-                //         strtolower($livewire->getOwnerRecord()->name) === 'admin' &&
+                //         fn($livewire) => strtolower($livewire->getOwnerRecord()->name) === 'admin' &&
                 //             $livewire->getOwnerRecord()->users()->count() <= 1
                 //     ),
 

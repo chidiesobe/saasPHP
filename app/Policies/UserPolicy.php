@@ -23,12 +23,12 @@ class UserPolicy
         return $user->hasPermissionTo('create_user');
     }
 
-    public function update(User $user, User $target): bool
+    public function update(User $user): bool
     {
         return $user->hasPermissionTo('update_user');
     }
 
-    public function delete(User $user, User $target): bool
+    public function delete(User $user): bool
     {
         return $user->hasPermissionTo('delete_user');
     }
