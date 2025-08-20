@@ -35,10 +35,7 @@ class RolesRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\DetachAction::make()
-                    ->label('Detach')
-                    ->hidden(fn($record) => !\App\Helpers\RoleHelper::shouldHideAdminDetach($record))
-                    ->authorize(fn($record) => !\App\Helpers\RoleHelper::shouldHideAdminDetach($record))
+                // Adding roles to user is done from the role dashboard
             ])
             ->actions([
                 Tables\Actions\DetachAction::make()
