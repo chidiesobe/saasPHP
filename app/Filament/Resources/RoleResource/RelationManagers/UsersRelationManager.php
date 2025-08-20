@@ -37,7 +37,6 @@ class UsersRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-
                 Tables\Actions\AttachAction::make()
                     ->recordSelectOptionsQuery(fn() => User::doesntHave('roles'))
                     ->recordSelectSearchColumns(['name', 'email', 'phone'])
@@ -45,9 +44,8 @@ class UsersRelationManager extends RelationManager
             ])
             ->actions([
                 Tables\Actions\DetachAction::make()
-                    ->label('Detach')
                     ->hidden(fn($record) => !\App\Helpers\RoleHelper::shouldHideAdminDetach($record))
-                    ->authorize(fn($record) => !\App\Helpers\RoleHelper::shouldHideAdminDetach($record))
+                    ->authorize(fn($record) => \App\Helpers\RoleHelper::shouldHideAdminDetach($record))
             ])
             ->bulkActions([
                 // Tables\Actions\DetachBulkAction::make()
@@ -56,7 +54,6 @@ class UsersRelationManager extends RelationManager
                 //         fn($livewire) => strtolower($livewire->getOwnerRecord()->name) === 'admin' &&
                 //             $livewire->getOwnerRecord()->users()->count() <= 1
                 //     ),
-
             ]);
     }
 }

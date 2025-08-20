@@ -35,12 +35,15 @@ class RolesRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\AttachAction::make(),
+                Tables\Actions\DetachAction::make()
+                    ->label('Detach')
+                    ->hidden(fn($record) => !\App\Helpers\RoleHelper::shouldHideAdminDetach($record))
+                    ->authorize(fn($record) => !\App\Helpers\RoleHelper::shouldHideAdminDetach($record))
             ])
             ->actions([
                 Tables\Actions\DetachAction::make()
                     ->hidden(fn($record) => !\App\Helpers\RoleHelper::shouldHideAdminDetach($record))
-                    ->authorize(fn($record) => !\App\Helpers\RoleHelper::shouldHideAdminDetach($record))
+                    ->authorize(fn($record) => \App\Helpers\RoleHelper::shouldHideAdminDetach($record))
             ])
             ->bulkActions([
                 // No bulk actions available

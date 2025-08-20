@@ -14,7 +14,7 @@ class RoleHelper
             ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
             ->where('roles.name', 'admin')
             ->count();
-            
+
         // Allow detaching if the user has permission to update the role and there are more than one admin
         return auth()->user()->can('update', $record) && static::$adminCount > 1;
     }
