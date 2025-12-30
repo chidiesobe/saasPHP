@@ -145,7 +145,7 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
 
             return true;
         } catch (\Throwable $e) {
-            // 5. Log failure, never crash request
+            // Log failure, never crash request
             \Log::warning('Email verification failed', [
                 'user_id' => $this->id,
                 'exception' => $e->getMessage(),

@@ -5,7 +5,7 @@ return [
         'site.name'                       => ['value' => 'SaaS PHP', 'type' => 'string'],
         'site.url'                        => ['value' => 'saasphp.com', 'type' => 'string'],
         'site.description'                => ['value' => 'SaaS PHP is a powerful SaaS application framework.', 'type' => 'string'],
-        'site.logo'                       => ['value' => '/logos/logo.png', 'type' => 'string'],
+        'site.logo'                       => ['value' => 'logos/logo.png', 'type' => 'string'],
         'site.theme'                      => ['value' => 'default', 'type' => 'string'],
         'site.timezone'                   => ['value' => 'UTC', 'type' => 'string'],
         'site.currency'                   => ['value' => 'USD', 'type' => 'string'],
