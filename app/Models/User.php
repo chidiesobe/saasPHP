@@ -128,10 +128,31 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
             return false;
         }
 
-        $this->sendEmailVerificationNotification();
-        RateLimiter::hit($key, now()->diffInSeconds(now()->addMinutes(15)));
+        if (app()->environment('local') && config('mail.default') === 'log') {
+            RateLimiter::hit($key, now()->addMinutes(15)->diffInSeconds());
+            return true;
+        }
 
-        return true;
+        try {
+            // Attempt to send
+            $this->sendEmailVerificationNotification();
+
+            // Only hit rate limiter on SUCCESS
+            RateLimiter::hit(
+                $key,
+                now()->addMinutes(15)->diffInSeconds()
+            );
+
+            return true;
+        } catch (\Throwable $e) {
+            // 5. Log failure, never crash request
+            \Log::warning('Email verification failed', [
+                'user_id' => $this->id,
+                'exception' => $e->getMessage(),
+            ]);
+
+            return false;
+        }
     }
 
     public function sendPhoneVerificationCodeWithRateLimit(): bool
