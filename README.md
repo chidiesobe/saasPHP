@@ -50,6 +50,9 @@ A comprehensive SaaS starter kit built with Laravel, React, and Inertia.js featu
 ```bash
 git clone https://github.com/chidiesobe/saasPHP saasphp
 cd saasphp
+
+# Create SQLite database (default)
+touch database/database.sqlite
 ```
 
 2. **Install Dependencies**
@@ -66,9 +69,6 @@ php artisan key:generate
 
 4. **Database Setup**
 ```bash
-# Create SQLite database (default)
-touch database/database.sqlite
-
 # Run migrations and seed data
 php artisan migrate
 php artisan db:seed
